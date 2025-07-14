@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, BarChart3, QrCode, Users, Plus, TrendingUp, Globe, Clock, LogOut, Settings } from 'lucide-react';
 import StatsCard from '@/components/ui/stats-card';
-import LinkCard from '@/components/ui/link-card';
-import GlassButton from '@/components/ui/glass-button';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CreateLinkForm } from '@/components/dashboard/CreateLinkForm';
@@ -216,22 +214,9 @@ export function Dashboard() {
             </div>
             
             <div className="space-y-4">
-              {recentLinks.map((link, index) => (
-                <motion.div
-                  key={link.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.1 * index }}
-                >
-                  <LinkCard
-                    {...link}
-                    onCopy={handleCopy}
-                    onEdit={(id) => console.log('Edit', id)}
-                    onDelete={(id) => console.log('Delete', id)}
-                    onViewAnalytics={(id) => console.log('Analytics', id)}
-                  />
-                </motion.div>
-              ))}
+              <p className="text-muted-foreground text-center py-8">
+                Nenhum link criado ainda. Clique em "Criar Link" para começar!
+              </p>
             </div>
           </motion.div>
 
@@ -320,9 +305,9 @@ export function Dashboard() {
                 <p className="text-sm text-foreground-muted mb-4">
                   Desbloqueie analytics avançado, domínios personalizados e muito mais.
                 </p>
-                <GlassButton className="w-full">
+                <Button className="w-full glass-button">
                   Fazer Upgrade
-                </GlassButton>
+                </Button>
               </div>
             </motion.div>
           </motion.div>
