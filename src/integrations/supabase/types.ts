@@ -248,6 +248,82 @@ export type Database = {
           },
         ]
       }
+      data_backups: {
+        Row: {
+          backup_type: string
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          file_path: string | null
+          id: string
+          size_bytes: number | null
+          status: string
+        }
+        Insert: {
+          backup_type: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          file_path?: string | null
+          id?: string
+          size_bytes?: number | null
+          status?: string
+        }
+        Update: {
+          backup_type?: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          file_path?: string | null
+          id?: string
+          size_bytes?: number | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "data_backups_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      domain_filters: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          domain: string
+          id: string
+          reason: string | null
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          domain: string
+          id?: string
+          reason?: string | null
+          type: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          domain?: string
+          id?: string
+          reason?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "domain_filters_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       financial_metrics: {
         Row: {
           arr: number
@@ -478,6 +554,36 @@ export type Database = {
           },
         ]
       }
+      security_events: {
+        Row: {
+          created_at: string
+          details: Json | null
+          event_type: string
+          id: string
+          ip_address: unknown
+          severity: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          details?: Json | null
+          event_type: string
+          id?: string
+          ip_address: unknown
+          severity?: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          details?: Json | null
+          event_type?: string
+          id?: string
+          ip_address?: unknown
+          severity?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       user_plans: {
         Row: {
           analytics_enabled: boolean
@@ -517,6 +623,57 @@ export type Database = {
         }
         Relationships: []
       }
+      user_reports: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          link_id: string | null
+          reason: string
+          reporter_ip: unknown | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          link_id?: string | null
+          reason: string
+          reporter_ip?: unknown | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          link_id?: string | null
+          reason?: string
+          reporter_ip?: unknown | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_reports_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "links"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_reports_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -525,6 +682,10 @@ export type Database = {
       calculate_daily_financial_metrics: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      check_domain_safety: {
+        Args: { url: string }
+        Returns: boolean
       }
       create_admin_alert: {
         Args: {
@@ -548,8 +709,22 @@ export type Database = {
         }
         Returns: string
       }
+      create_data_backup: {
+        Args: { _backup_type: string; _admin_user_id: string }
+        Returns: string
+      }
       generate_short_code: {
         Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      log_security_event: {
+        Args: {
+          _event_type: string
+          _ip_address: unknown
+          _user_agent?: string
+          _details?: Json
+          _severity?: string
+        }
         Returns: string
       }
     }

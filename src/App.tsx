@@ -3,6 +3,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import Homepage from "@/pages/Homepage";
 import Index from "@/pages/Index";
 import { Dashboard } from "@/pages/Dashboard";
@@ -21,6 +23,7 @@ import { AdminDashboard } from "@/pages/admin/AdminDashboard";
 import { UserManagement } from "@/pages/admin/UserManagement";
 import { AdvancedAnalytics } from "@/pages/admin/AdvancedAnalytics";
 import FinancialManagement from "@/pages/admin/FinancialManagement";
+import SecurityManagement from "@/pages/admin/SecurityManagement";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ProtectedAdminRoute } from "@/components/admin/ProtectedAdminRoute";
 
@@ -29,11 +32,13 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <AuthProvider>
-        <AdminAuthProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
+      <ErrorBoundary>
+        <AuthProvider>
+          <AdminAuthProvider>
+            <Toaster />
+            <Sonner />
+            <PWAInstallPrompt />
+            <BrowserRouter>
             <Routes>
               {/* Rotas públicas */}
               <Route path="/" element={<Homepage />} />
@@ -73,7 +78,7 @@ const App = () => (
                 <Route path="users" element={<UserManagement />} />
                 <Route path="analytics" element={<AdvancedAnalytics />} />
                 <Route path="financial" element={<FinancialManagement />} />
-                {/* Outras rotas admin serão adicionadas nas próximas etapas */}
+                <Route path="security" element={<SecurityManagement />} />
               </Route>
               
               {/* Catch-all route */}
@@ -82,8 +87,9 @@ const App = () => (
           </BrowserRouter>
         </AdminAuthProvider>
       </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
+    </ErrorBoundary>
+  </TooltipProvider>
+</QueryClientProvider>
 );
 
 export default App;

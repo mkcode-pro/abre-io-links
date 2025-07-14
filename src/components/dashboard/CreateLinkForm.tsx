@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useSecurity } from '@/hooks/useSecurity';
 
 interface CreatedLink {
   id: string;
@@ -33,6 +34,7 @@ export function CreateLinkForm({ onLinkCreated }: CreateLinkFormProps) {
   
   const { user } = useAuth();
   const { toast } = useToast();
+  const { validateLinkCreation } = useSecurity();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +43,12 @@ export function CreateLinkForm({ onLinkCreated }: CreateLinkFormProps) {
     setLoading(true);
 
     try {
+      // Validate URL security before creating
+      const isValid = await validateLinkCreation(url, user.id);
+      if (!isValid) {
+        setLoading(false);
+        return;
+      }
       // Generate short code from database function
       const { data: shortCodeData, error: shortCodeError } = await supabase
         .rpc('generate_short_code');
