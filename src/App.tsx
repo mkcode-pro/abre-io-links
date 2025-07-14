@@ -14,43 +14,67 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import NotFound from "./pages/NotFound";
 
+// Admin imports
+import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
+import { AdminLogin } from "@/pages/admin/AdminLogin";
+import { AdminDashboard } from "@/pages/admin/AdminDashboard";
+import { AdminLayout } from "@/components/admin/AdminLayout";
+import { ProtectedAdminRoute } from "@/components/admin/ProtectedAdminRoute";
+
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <AuthProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Homepage />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/bio/:username" element={<BioPage />} />
-            <Route 
-              path="/bio-editor" 
-              element={
-                <ProtectedRoute>
-                  <div className="p-6">
-                    <BioEditor />
-                  </div>
-                </ProtectedRoute>
-              } 
-            />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/app" element={<Index />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <AdminAuthProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              {/* Rotas públicas */}
+              <Route path="/" element={<Homepage />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/bio/:username" element={<BioPage />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/app" element={<Index />} />
+              
+              {/* Rotas protegidas de usuários */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route 
+                path="/bio-editor" 
+                element={
+                  <ProtectedRoute>
+                    <div className="p-6">
+                      <BioEditor />
+                    </div>
+                  </ProtectedRoute>
+                } 
+              />
+              
+              {/* Rotas administrativas independentes */}
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin/*" element={
+                <ProtectedAdminRoute>
+                  <AdminLayout />
+                </ProtectedAdminRoute>
+              }>
+                <Route path="dashboard" element={<AdminDashboard />} />
+                {/* Outras rotas admin serão adicionadas nas próximas etapas */}
+              </Route>
+              
+              {/* Catch-all route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </AdminAuthProvider>
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
