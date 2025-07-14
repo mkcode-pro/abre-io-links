@@ -7,6 +7,8 @@ import Homepage from "@/pages/Homepage";
 import Index from "@/pages/Index";
 import { Dashboard } from "@/pages/Dashboard";
 import { Auth } from "@/pages/Auth";
+import BioPage from "@/pages/BioPage";
+import { BioEditor } from "@/components/bio/BioEditor";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import NotFound from "./pages/NotFound";
@@ -30,6 +32,17 @@ const App = () => (
                   <Dashboard />
                 </ProtectedRoute>
               }
+            />
+            <Route path="/bio/:username" element={<BioPage />} />
+            <Route 
+              path="/bio-editor" 
+              element={
+                <ProtectedRoute>
+                  <div className="p-6">
+                    <BioEditor />
+                  </div>
+                </ProtectedRoute>
+              } 
             />
             <Route path="/app" element={<Index />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
