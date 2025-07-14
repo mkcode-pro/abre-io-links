@@ -193,6 +193,7 @@ export function Dashboard() {
               </Button>
             </div>
           </motion.div>
+
         </div>
 
         {showCreateForm && (
@@ -205,7 +206,6 @@ export function Dashboard() {
             />
           </div>
         )}
-
 
         {/* Stats Grid */}
         <motion.div
@@ -226,7 +226,7 @@ export function Dashboard() {
           ))}
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Links Management */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -264,6 +264,65 @@ export function Dashboard() {
             />
           </motion.div>
 
+          {/* Analytics Sidebar */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="lg:col-span-1"
+          >
+            <div className="space-y-6">
+              <Card className="glass-card">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5" />
+                    Analytics Rápidos
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-primary">
+                      {links.reduce((total, link) => total + (link.clicks || 0), 0).toLocaleString()}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Total de Cliques</p>
+                  </div>
+                  
+                  <div className="text-center">
+                    <p className="text-xl font-semibold">
+                      {links.filter(link => {
+                        const today = new Date().toDateString();
+                        return new Date(link.created_at).toDateString() === today;
+                      }).reduce((total, link) => total + (link.clicks || 0), 0)}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Cliques Hoje</p>
+                  </div>
+
+                  <div className="text-center">
+                    <p className="text-xl font-semibold">
+                      {Math.round((links.filter(link => link.is_active).length / Math.max(links.length, 1)) * 100)}%
+                    </p>
+                    <p className="text-sm text-muted-foreground">Links Ativos</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Upgrade Prompt */}
+              <Card className="glass-card bg-gradient-to-br from-primary/20 to-secondary/20 border-primary/30">
+                <CardContent className="text-center p-6">
+                  <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <TrendingUp className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">Upgrade para PRO</h3>
+                  <p className="text-sm text-foreground-muted mb-4">
+                    Analytics avançado, domínios personalizados e muito mais.
+                  </p>
+                  <Button className="w-full glass-button">
+                    Fazer Upgrade
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </motion.div>
         </div>
       </main>
     </div>

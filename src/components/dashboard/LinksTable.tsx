@@ -46,6 +46,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { EditLinkDialog } from './EditLinkDialog';
 import { DeleteConfirmDialog } from './DeleteConfirmDialog';
+import { AnalyticsDialog } from '../analytics/AnalyticsDialog';
 
 interface LinksTableProps {
   links: Link[];
@@ -82,6 +83,7 @@ export function LinksTable({
 }: LinksTableProps) {
   const [editingLink, setEditingLink] = useState<Link | null>(null);
   const [deletingLink, setDeletingLink] = useState<Link | null>(null);
+  const [analyticsLink, setAnalyticsLink] = useState<Link | null>(null);
   const { toast } = useToast();
 
   const copyToClipboard = (text: string) => {
@@ -317,7 +319,9 @@ export function LinksTable({
                         <Copy className="h-4 w-4 mr-2" />
                         Copiar Link
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => setAnalyticsLink(link)}
+                      >
                         <BarChart3 className="h-4 w-4 mr-2" />
                         Analytics
                       </DropdownMenuItem>
@@ -360,6 +364,16 @@ export function LinksTable({
           </div>
         )}
       </div>
+
+      {analyticsLink && (
+        <AnalyticsDialog
+          linkId={analyticsLink.id}
+          linkTitle={analyticsLink.title || 'Link sem título'}
+          shortCode={analyticsLink.short_code}
+          open={!!analyticsLink}
+          onClose={() => setAnalyticsLink(null)}
+        />
+      )}
 
       {/* Dialogs */}
       {editingLink && (
