@@ -5,49 +5,72 @@ import StatsCard from '@/components/ui/stats-card';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CreateLinkForm } from '@/components/dashboard/CreateLinkForm';
+import { LinksTable } from '@/components/dashboard/LinksTable';
+import { useLinks } from '@/hooks/useLinks';
 import { useAuth } from '@/contexts/AuthContext';
 
 export function Dashboard() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const { user, profile, signOut } = useAuth();
+  const {
+    links,
+    loading: linksLoading,
+    hasMore,
+    searchTerm,
+    setSearchTerm,
+    statusFilter,
+    setStatusFilter,
+    selectedLinks,
+    setSelectedLinks,
+    updateLink,
+    deleteLink,
+    deleteSelectedLinks,
+    toggleSelectedLinks,
+    loadMore,
+    refresh,
+  } = useLinks();
 
   const handleSignOut = async () => {
     await signOut();
   };
 
+  // Calculate real stats from links
   const stats = [
     {
       title: "Total de Links",
-      value: 0,
+      value: links.length,
       icon: Link,
-      trend: { value: 0, isPositive: true },
-      description: "último mês",
+      trend: { value: links.length, isPositive: true },
+      description: "total criados",
       gradient: "primary" as const
     },
     {
       title: "Cliques Totais",
-      value: "0",
-      icon: TrendingUp,
+      value: links.reduce((total, link) => total + (link.clicks || 0), 0).toLocaleString(),
+      icon: BarChart3,
       trend: { value: 0, isPositive: true },
       description: "último mês",
       gradient: "secondary" as const
     },
     {
-      title: "Bio Pages",
-      value: 0,
-      icon: Globe,
-      trend: { value: 0, isPositive: true },
-      description: "último mês",
+      title: "Links Ativos",
+      value: links.filter(link => link.is_active).length,
+      icon: TrendingUp,
+      trend: { value: Math.round((links.filter(link => link.is_active).length / Math.max(links.length, 1)) * 100), isPositive: true },
+      description: "% ativos",
       gradient: "accent" as const
     },
     {
-      title: "QR Codes",
-      value: 0,
-      icon: QrCode,
+      title: "Criados Hoje",
+      value: links.filter(link => {
+        const today = new Date().toDateString();
+        return new Date(link.created_at).toDateString() === today;
+      }).length,
+      icon: Clock,
       trend: { value: 0, isPositive: true },
-      description: "último mês",
+      description: "hoje",
       gradient: "primary" as const
-    }
+    },
   ];
 
   const recentLinks = [
@@ -174,7 +197,12 @@ export function Dashboard() {
 
         {showCreateForm && (
           <div className="mb-8">
-            <CreateLinkForm onLinkCreated={() => setShowCreateForm(false)} />
+            <CreateLinkForm 
+              onLinkCreated={() => {
+                setShowCreateForm(false);
+                refresh(); // Refresh the links data
+              }}
+            />
           </div>
         )}
 
@@ -199,118 +227,43 @@ export function Dashboard() {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Recent Links */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="lg:col-span-2"
-          >
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-semibold">Links Recentes</h2>
-              <Button variant="ghost" className="text-primary">
-                Ver Todos
-              </Button>
-            </div>
-            
-            <div className="space-y-4">
-              <p className="text-muted-foreground text-center py-8">
-                Nenhum link criado ainda. Clique em "Criar Link" para começar!
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Quick Actions & Recent Activity */}
+          {/* Links Management */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="space-y-6"
+            className="lg:col-span-3"
           >
-            {/* Quick Actions */}
-            <div className="glass-card p-6">
-              <h3 className="text-xl font-semibold mb-4">Ações Rápidas</h3>
-              <div className="space-y-3">
-                {quickActions.map((action, index) => {
-                  const Icon = action.icon;
-                  return (
-                    <motion.button
-                      key={index}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={action.action}
-                      className="w-full glass-card p-4 text-left hover:bg-background-tertiary transition-all duration-300 group"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className={`p-2 rounded-lg ${
-                          action.variant === 'primary' ? 'bg-primary/20 text-primary' :
-                          action.variant === 'secondary' ? 'bg-secondary/20 text-secondary' :
-                          'bg-accent/20 text-accent'
-                        }`}>
-                          <Icon className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <p className="font-medium">{action.title}</p>
-                          <p className="text-sm text-foreground-muted">{action.description}</p>
-                        </div>
-                      </div>
-                    </motion.button>
-                  );
-                })}
-              </div>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-foreground">Meus Links</h2>
+              <Button
+                onClick={() => setShowCreateForm(true)}
+                size="sm"
+                className="bg-primary/20 text-primary border-primary/30 hover:bg-primary/30 backdrop-blur-sm"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Novo Link
+              </Button>
             </div>
-
-            {/* Recent Activity */}
-            <div className="glass-card p-6">
-              <h3 className="text-xl font-semibold mb-4">Atividade Recente</h3>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3 p-3 rounded-lg bg-background-tertiary/50">
-                  <div className="w-2 h-2 bg-success rounded-full"></div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Link criado</p>
-                    <p className="text-xs text-foreground-muted">Produto Incrível • há 2 horas</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-3 p-3 rounded-lg bg-background-tertiary/50">
-                  <div className="w-2 h-2 bg-info rounded-full"></div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">1000 cliques atingidos</p>
-                    <p className="text-xs text-foreground-muted">Webinar Gratuito • há 4 horas</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-3 p-3 rounded-lg bg-background-tertiary/50">
-                  <div className="w-2 h-2 bg-warning rounded-full"></div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Bio page atualizada</p>
-                    <p className="text-xs text-foreground-muted">Perfil principal • ontem</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Upgrade Prompt */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="glass-card p-6 bg-gradient-to-br from-primary/20 to-secondary/20 border-primary/30"
-            >
-              <div className="text-center">
-                <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center mx-auto mb-3">
-                  <TrendingUp className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold mb-2">Upgrade para PRO</h3>
-                <p className="text-sm text-foreground-muted mb-4">
-                  Desbloqueie analytics avançado, domínios personalizados e muito mais.
-                </p>
-                <Button className="w-full glass-button">
-                  Fazer Upgrade
-                </Button>
-              </div>
-            </motion.div>
+            
+            <LinksTable
+              links={links}
+              loading={linksLoading}
+              hasMore={hasMore}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              statusFilter={statusFilter}
+              setStatusFilter={setStatusFilter}
+              selectedLinks={selectedLinks}
+              setSelectedLinks={setSelectedLinks}
+              onUpdateLink={updateLink}
+              onDeleteLink={deleteLink}
+              onDeleteSelected={deleteSelectedLinks}
+              onToggleSelected={toggleSelectedLinks}
+              onLoadMore={loadMore}
+            />
           </motion.div>
+
         </div>
       </main>
     </div>
