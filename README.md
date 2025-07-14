@@ -112,14 +112,32 @@ No dashboard do Supabase, vá em Settings > API e copie:
 
 #### 3.4 Configure Authentication
 - Ative Email/Password authentication
-- Configure redirect URLs para `http://localhost:8080` (desenvolvimento)
+- Configure redirect URLs para sua URL de desenvolvimento (ex: `http://localhost:3000`)
 
-### 4. Execute o Projeto
+### 4. Configure Variáveis de Ambiente (Opcional)
+```bash
+# Crie arquivo .env.local (opcional)
+PORT=3000  # Define porta específica (deixe vazio para auto-detecção)
+```
+
+### 5. Execute o Projeto
 ```bash
 npm run dev
 ```
 
-Acesse: `http://localhost:8080`
+O servidor iniciará automaticamente em uma porta disponível. A URL será exibida no terminal.
+
+#### Para usar porta específica:
+```bash
+npm run dev:port 3000
+# ou
+PORT=3000 npm run dev
+```
+
+#### Para verificar portas disponíveis:
+```bash
+npm run check-ports
+```
 
 ## 📚 Guia de Uso
 
@@ -277,17 +295,67 @@ Para Google Analytics:
 - Execute migrations em produção
 
 ### 2. Frontend Deploy
-- Build: `npm run build`
-- Deploy no Vercel/Netlify/etc
-- Configure domínio
+
+#### Para VPS/Servidor Dedicado:
+```bash
+# Build para produção
+npm run build
+
+# Servir arquivos estáticos com nginx/apache
+# Configure proxy reverso para sua aplicação
+```
+
+#### Configuração Nginx (exemplo):
+```nginx
+server {
+    listen 80;
+    server_name seudominio.com;
+    
+    location / {
+        proxy_pass http://localhost:3000;  # Porta do seu app
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+
+#### Para múltiplos projetos na mesma VPS:
+```bash
+# Use portas diferentes para cada projeto
+PORT=3001 npm run dev  # Projeto 1
+PORT=3002 npm run dev  # Projeto 2
+PORT=3003 npm run dev  # Projeto 3
+```
 
 ### 3. Configurações de Produção
-- Configure CORS no Supabase
-- Ajuste redirect URLs
-- Configure rate limits
-- Ative monitoring
+- Configure CORS no Supabase para seu domínio
+- Ajuste redirect URLs para https://seudominio.com
+- Configure rate limits apropriados
+- Ative monitoring e logs
 
-### 4. SEO e Performance
+### 4. Gerenciamento de Processos (PM2)
+```bash
+npm install -g pm2
+
+# Iniciar aplicação
+pm2 start "npm run dev" --name "url-shortener"
+
+# Para porta específica
+PORT=3000 pm2 start "npm run dev" --name "url-shortener"
+
+# Salvar configuração
+pm2 save
+pm2 startup
+```
+
+### 5. Configuração Flexível
+O projeto detecta automaticamente portas disponíveis, evitando conflitos:
+- ✅ **Detecção automática** de porta livre
+- ✅ **Configuração via ENV** para ambientes específicos
+- ✅ **Scripts flexíveis** para diferentes cenários
+- ✅ **Suporte VPS** com múltiplos projetos
+
+### 6. SEO e Performance
 - Meta tags dinâmicas configuradas
 - Sitemap automático
 - Analytics integrado
