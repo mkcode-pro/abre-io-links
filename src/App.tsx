@@ -18,6 +18,7 @@ import NotFound from "./pages/NotFound";
 import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
 import { AdminLogin } from "@/pages/admin/AdminLogin";
 import { AdminDashboard } from "@/pages/admin/AdminDashboard";
+import { UserManagement } from "@/pages/admin/UserManagement";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ProtectedAdminRoute } from "@/components/admin/ProtectedAdminRoute";
 
@@ -67,6 +68,7 @@ const App = () => (
                 </ProtectedAdminRoute>
               }>
                 <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="users" element={<UserManagement />} />
                 {/* Outras rotas admin serão adicionadas nas próximas etapas */}
               </Route>
               
