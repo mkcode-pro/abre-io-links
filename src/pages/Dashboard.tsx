@@ -8,6 +8,7 @@ import { CreateLinkForm } from '@/components/dashboard/CreateLinkForm';
 import { LinksTable } from '@/components/dashboard/LinksTable';
 import { useLinks } from '@/hooks/useLinks';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePlan } from '@/hooks/usePlan';
 
 export function Dashboard() {
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -29,6 +30,7 @@ export function Dashboard() {
     loadMore,
     refresh,
   } = useLinks();
+  const { plan, canCreateLinks, getRemainingLinks, isPremium } = usePlan();
 
   const handleSignOut = async () => {
     await signOut();
@@ -180,16 +182,22 @@ export function Dashboard() {
                 <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
                   Dashboard
                 </h1>
-                <p className="text-xl text-muted-foreground">
-                  Gerencie seus links e acompanhe suas métricas
-                </p>
-              </div>
-              <Button 
-                onClick={() => setShowCreateForm(!showCreateForm)}
-                className="glass-button"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Criar Link
+                 <p className="text-xl text-muted-foreground">
+                   Gerencie seus links e acompanhe suas métricas
+                 </p>
+                 {plan && !isPremium() && (
+                   <p className="text-sm text-amber-400 mt-1">
+                     Plano Gratuito: {getRemainingLinks(links.length)} links restantes
+                   </p>
+                 )}
+               </div>
+               <Button 
+                 onClick={() => setShowCreateForm(!showCreateForm)}
+                 className="glass-button"
+                 disabled={!canCreateLinks(links.length)}
+               >
+                 <Plus className="w-4 h-4 mr-2" />
+                 {!canCreateLinks(links.length) ? 'Limite Atingido' : 'Criar Link'}
               </Button>
             </div>
           </motion.div>

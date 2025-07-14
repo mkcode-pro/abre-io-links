@@ -8,6 +8,7 @@ import Index from "@/pages/Index";
 import { Dashboard } from "@/pages/Dashboard";
 import { Auth } from "@/pages/Auth";
 import BioPage from "@/pages/BioPage";
+import Pricing from "@/pages/Pricing";
 import { BioEditor } from "@/components/bio/BioEditor";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
@@ -44,6 +45,7 @@ const App = () => (
                 </ProtectedRoute>
               } 
             />
+            <Route path="/pricing" element={<Pricing />} />
             <Route path="/app" element={<Index />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

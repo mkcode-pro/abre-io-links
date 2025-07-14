@@ -231,6 +231,45 @@ export type Database = {
           },
         ]
       }
+      user_plans: {
+        Row: {
+          analytics_enabled: boolean
+          bio_pages_enabled: boolean
+          created_at: string
+          id: string
+          max_clicks_per_month: number
+          max_links: number
+          plan_type: string
+          qr_codes_enabled: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          analytics_enabled?: boolean
+          bio_pages_enabled?: boolean
+          created_at?: string
+          id?: string
+          max_clicks_per_month?: number
+          max_links?: number
+          plan_type?: string
+          qr_codes_enabled?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          analytics_enabled?: boolean
+          bio_pages_enabled?: boolean
+          created_at?: string
+          id?: string
+          max_clicks_per_month?: number
+          max_links?: number
+          plan_type?: string
+          qr_codes_enabled?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
