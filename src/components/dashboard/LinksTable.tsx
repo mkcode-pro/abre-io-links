@@ -14,7 +14,8 @@ import {
   Calendar,
   Mouse,
   CheckCircle,
-  XCircle
+  XCircle,
+  QrCode
 } from 'lucide-react';
 import { Link } from '@/hooks/useLinks';
 import { Button } from '@/components/ui/button';
@@ -47,6 +48,7 @@ import { useToast } from '@/hooks/use-toast';
 import { EditLinkDialog } from './EditLinkDialog';
 import { DeleteConfirmDialog } from './DeleteConfirmDialog';
 import { AnalyticsDialog } from '../analytics/AnalyticsDialog';
+import { QRCodeGenerator } from './QRCodeGenerator';
 
 interface LinksTableProps {
   links: Link[];
@@ -300,41 +302,48 @@ export function LinksTable({
                 </TableCell>
                 
                 <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        onClick={() => setEditingLink(link)}
-                      >
-                        <Edit2 className="h-4 w-4 mr-2" />
-                        Editar
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => copyToClipboard(`${window.location.origin}/${link.short_code}`)}
-                      >
-                        <Copy className="h-4 w-4 mr-2" />
-                        Copiar Link
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => setAnalyticsLink(link)}
-                      >
-                        <BarChart3 className="h-4 w-4 mr-2" />
-                        Analytics
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={() => setDeletingLink(link)}
-                        className="text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Excluir
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <div className="flex items-center">
+                    <QRCodeGenerator 
+                      url={`${window.location.origin}/${link.short_code}`}
+                      title={link.title}
+                      shortCode={link.short_code}
+                    />
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() => setEditingLink(link)}
+                        >
+                          <Edit2 className="h-4 w-4 mr-2" />
+                          Editar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => copyToClipboard(`${window.location.origin}/${link.short_code}`)}
+                        >
+                          <Copy className="h-4 w-4 mr-2" />
+                          Copiar Link
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => setAnalyticsLink(link)}
+                        >
+                          <BarChart3 className="h-4 w-4 mr-2" />
+                          Analytics
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={() => setDeletingLink(link)}
+                          className="text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Excluir
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </TableCell>
               </motion.tr>
             ))}
