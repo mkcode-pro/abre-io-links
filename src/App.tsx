@@ -20,6 +20,7 @@ import { AdminLogin } from "@/pages/admin/AdminLogin";
 import { AdminDashboard } from "@/pages/admin/AdminDashboard";
 import { UserManagement } from "@/pages/admin/UserManagement";
 import { AdvancedAnalytics } from "@/pages/admin/AdvancedAnalytics";
+import FinancialManagement from "@/pages/admin/FinancialManagement";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ProtectedAdminRoute } from "@/components/admin/ProtectedAdminRoute";
 
@@ -71,6 +72,7 @@ const App = () => (
                 <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="users" element={<UserManagement />} />
                 <Route path="analytics" element={<AdvancedAnalytics />} />
+                <Route path="financial" element={<FinancialManagement />} />
                 {/* Outras rotas admin serão adicionadas nas próximas etapas */}
               </Route>
               

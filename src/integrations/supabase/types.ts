@@ -248,6 +248,93 @@ export type Database = {
           },
         ]
       }
+      financial_metrics: {
+        Row: {
+          arr: number
+          churn_rate: number
+          conversion_rate: number
+          created_at: string
+          id: string
+          metric_date: string
+          mrr: number
+          paid_users: number
+          total_users: number
+        }
+        Insert: {
+          arr?: number
+          churn_rate?: number
+          conversion_rate?: number
+          created_at?: string
+          id?: string
+          metric_date: string
+          mrr?: number
+          paid_users?: number
+          total_users?: number
+        }
+        Update: {
+          arr?: number
+          churn_rate?: number
+          conversion_rate?: number
+          created_at?: string
+          id?: string
+          metric_date?: string
+          mrr?: number
+          paid_users?: number
+          total_users?: number
+        }
+        Relationships: []
+      }
+      invoices: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          due_date: string
+          id: string
+          metadata: Json | null
+          paid_at: string | null
+          payment_method: string | null
+          payment_provider: string | null
+          payment_provider_id: string | null
+          plan_type: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          due_date: string
+          id?: string
+          metadata?: Json | null
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_provider?: string | null
+          payment_provider_id?: string | null
+          plan_type: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          due_date?: string
+          id?: string
+          metadata?: Json | null
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_provider?: string | null
+          payment_provider_id?: string | null
+          plan_type?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       links: {
         Row: {
           clicks: number | null
@@ -290,6 +377,30 @@ export type Database = {
           title?: string | null
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      plan_features: {
+        Row: {
+          created_at: string
+          feature_name: string
+          feature_value: string
+          id: string
+          plan_type: string
+        }
+        Insert: {
+          created_at?: string
+          feature_name: string
+          feature_value: string
+          id?: string
+          plan_type: string
+        }
+        Update: {
+          created_at?: string
+          feature_name?: string
+          feature_value?: string
+          id?: string
+          plan_type?: string
         }
         Relationships: []
       }
@@ -411,6 +522,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_daily_financial_metrics: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       create_admin_alert: {
         Args: {
           _type: string
