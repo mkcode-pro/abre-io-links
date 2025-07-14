@@ -99,12 +99,12 @@ const Navigation: React.FC<NavigationProps> = ({
               </Button>
             ) : (
               <>
-                <Link to="/login">
+                <Link to="/auth">
                   <Button variant="ghost" size="sm">
                     Entrar
                   </Button>
                 </Link>
-                <Link to="/register">
+                <Link to="/auth">
                   <Button className="btn-premium">
                     Começar Grátis
                   </Button>
@@ -176,12 +176,12 @@ const Navigation: React.FC<NavigationProps> = ({
                 </Button>
               ) : (
                 <>
-                  <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
                     <Button variant="ghost" className="w-full">
                       Entrar
                     </Button>
                   </Link>
-                  <Link to="/register" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
                     <Button className="w-full btn-premium">
                       Começar Grátis
                     </Button>

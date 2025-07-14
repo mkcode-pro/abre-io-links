@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { 
   Zap, 
-  Link, 
+  Link as LinkIcon, 
   BarChart3, 
   Shield, 
   Globe, 
@@ -14,6 +14,7 @@ import {
   TrendingUp,
   Lock
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Navigation from '@/components/ui/navigation';
 import GlassButton from '@/components/ui/glass-button';
 import StatsCard from '@/components/ui/stats-card';
@@ -22,7 +23,7 @@ import { cn } from '@/lib/utils';
 const Homepage = () => {
   const features = [
     {
-      icon: Link,
+      icon: LinkIcon,
       title: "Links Inteligentes",
       description: "Encurte URLs com personalização completa, análise avançada e controle total.",
       gradient: "primary"
@@ -162,12 +163,14 @@ const Homepage = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
           >
-            <GlassButton size="lg" icon={Zap}>
-              Começar Grátis
-            </GlassButton>
-            <GlassButton variant="ghost" size="lg" icon={ArrowRight} iconPosition="right">
-              Ver Demo
-            </GlassButton>
+              <Link to="/auth">
+                <GlassButton size="lg" icon={Zap}>
+                  Começar Grátis
+                </GlassButton>
+              </Link>
+              <GlassButton variant="ghost" size="lg" icon={ArrowRight} iconPosition="right">
+                Ver Demo
+              </GlassButton>
           </motion.div>
 
           {/* Stats */}
@@ -180,20 +183,17 @@ const Homepage = () => {
             <StatsCard
               title="Links Criados"
               value="2.4M+"
-              icon={Link}
-              gradient="primary"
+              icon={LinkIcon}
             />
             <StatsCard
               title="Cliques Processados"
               value="150M+"
               icon={BarChart3}
-              gradient="secondary"
             />
             <StatsCard
               title="Usuários Ativos"
               value="50K+"
               icon={Users}
-              gradient="accent"
             />
           </motion.div>
         </div>
@@ -371,9 +371,11 @@ const Homepage = () => {
               revolucionar seus links
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <GlassButton size="lg" icon={Zap}>
-                Começar Grátis Agora
-              </GlassButton>
+              <Link to="/auth">
+                <GlassButton size="lg" icon={Zap}>
+                  Começar Grátis Agora
+                </GlassButton>
+              </Link>
               <GlassButton variant="ghost" size="lg">
                 Falar com Vendas
               </GlassButton>

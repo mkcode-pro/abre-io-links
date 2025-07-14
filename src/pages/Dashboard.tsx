@@ -1,59 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Link, 
-  BarChart3, 
-  Users, 
-  Globe,
-  TrendingUp,
-  Eye,
-  Plus,
-  ExternalLink,
-  Copy,
-  QrCode,
-  Calendar,
-  ArrowUp,
-  ArrowDown
-} from 'lucide-react';
-import Navigation from '@/components/ui/navigation';
+import { Link, BarChart3, QrCode, Users, Plus, TrendingUp, Globe, Clock, LogOut, Settings } from 'lucide-react';
 import StatsCard from '@/components/ui/stats-card';
 import LinkCard from '@/components/ui/link-card';
 import GlassButton from '@/components/ui/glass-button';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CreateLinkForm } from '@/components/dashboard/CreateLinkForm';
+import { useAuth } from '@/contexts/AuthContext';
 
-const Dashboard = () => {
-  // Mock data
+export function Dashboard() {
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const { user, profile, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
   const stats = [
     {
       title: "Total de Links",
-      value: 245,
+      value: 0,
       icon: Link,
-      trend: { value: 12, isPositive: true },
+      trend: { value: 0, isPositive: true },
       description: "último mês",
       gradient: "primary" as const
     },
     {
       title: "Cliques Totais",
-      value: "125.8K",
-      icon: Eye,
-      trend: { value: 8.5, isPositive: true },
+      value: "0",
+      icon: TrendingUp,
+      trend: { value: 0, isPositive: true },
       description: "último mês",
       gradient: "secondary" as const
     },
     {
-      title: "Taxa de Conversão",
-      value: "3.2%",
-      icon: TrendingUp,
-      trend: { value: 1.8, isPositive: true },
+      title: "Bio Pages",
+      value: 0,
+      icon: Globe,
+      trend: { value: 0, isPositive: true },
       description: "último mês",
       gradient: "accent" as const
     },
     {
-      title: "Bio Pages",
-      value: 3,
-      icon: Globe,
-      trend: { value: 50, isPositive: true },
+      title: "QR Codes",
+      value: 0,
+      icon: QrCode,
+      trend: { value: 0, isPositive: true },
       description: "último mês",
       gradient: "primary" as const
     }
@@ -125,45 +118,68 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen">
-      <Navigation isAuthenticated={true} />
-      
-      <div className="pt-20 px-4 max-w-7xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-8"
-        >
-          <h1 className="text-3xl md:text-4xl font-poppins font-bold mb-2">
-            Dashboard
-          </h1>
-          <p className="text-foreground-muted">
-            Gerencie seus links e acompanhe suas métricas
-          </p>
-        </motion.div>
-
-        {/* Quick Create */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="glass-card p-6 mb-8"
-        >
-          <h2 className="text-xl font-semibold mb-4">Criar Link Rápido</h2>
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1">
-              <Input 
-                placeholder="Cole sua URL aqui..."
-                className="glass-input"
-              />
+    <div className="min-h-screen bg-dark">
+      {/* Header */}
+      <header className="border-b border-white/10 bg-dark/50 backdrop-blur-xl sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Link className="w-8 h-8 text-primary" />
+              <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                Abrev.io
+              </span>
             </div>
-            <GlassButton icon={Plus}>
-              Encurtar
-            </GlassButton>
+            
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-muted-foreground">
+                Olá, {profile?.name || user?.email}
+              </span>
+              <Button variant="outline" size="sm">
+                <Settings className="w-4 h-4 mr-2" />
+                Configurações
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
+                <LogOut className="w-4 h-4 mr-2" />
+                Sair
+              </Button>
+            </div>
           </div>
-        </motion.div>
+        </div>
+      </header>
+      
+      <main className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
+                  Dashboard
+                </h1>
+                <p className="text-xl text-muted-foreground">
+                  Gerencie seus links e acompanhe suas métricas
+                </p>
+              </div>
+              <Button 
+                onClick={() => setShowCreateForm(!showCreateForm)}
+                className="glass-button"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Criar Link
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+
+        {showCreateForm && (
+          <div className="mb-8">
+            <CreateLinkForm onLinkCreated={() => setShowCreateForm(false)} />
+          </div>
+        )}
+
 
         {/* Stats Grid */}
         <motion.div
@@ -180,7 +196,6 @@ const Dashboard = () => {
               icon={stat.icon}
               trend={stat.trend}
               description={stat.description}
-              gradient={stat.gradient}
             />
           ))}
         </motion.div>
@@ -312,9 +327,7 @@ const Dashboard = () => {
             </motion.div>
           </motion.div>
         </div>
-      </div>
+      </main>
     </div>
   );
-};
-
-export default Dashboard;
+}

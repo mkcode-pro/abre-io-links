@@ -14,13 +14,232 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bio_pages: {
+        Row: {
+          avatar_url: string | null
+          background_url: string | null
+          bio: string | null
+          created_at: string
+          custom_links: Json | null
+          id: string
+          is_active: boolean | null
+          social_links: Json | null
+          theme: string | null
+          title: string
+          updated_at: string
+          user_id: string | null
+          username: string
+          views: number | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          background_url?: string | null
+          bio?: string | null
+          created_at?: string
+          custom_links?: Json | null
+          id?: string
+          is_active?: boolean | null
+          social_links?: Json | null
+          theme?: string | null
+          title: string
+          updated_at?: string
+          user_id?: string | null
+          username: string
+          views?: number | null
+        }
+        Update: {
+          avatar_url?: string | null
+          background_url?: string | null
+          bio?: string | null
+          created_at?: string
+          custom_links?: Json | null
+          id?: string
+          is_active?: boolean | null
+          social_links?: Json | null
+          theme?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+          username?: string
+          views?: number | null
+        }
+        Relationships: []
+      }
+      clicks: {
+        Row: {
+          browser: string | null
+          city: string | null
+          clicked_at: string
+          country: string | null
+          device: string | null
+          id: string
+          ip_address: unknown | null
+          link_id: string | null
+          os: string | null
+          referrer: string | null
+        }
+        Insert: {
+          browser?: string | null
+          city?: string | null
+          clicked_at?: string
+          country?: string | null
+          device?: string | null
+          id?: string
+          ip_address?: unknown | null
+          link_id?: string | null
+          os?: string | null
+          referrer?: string | null
+        }
+        Update: {
+          browser?: string | null
+          city?: string | null
+          clicked_at?: string
+          country?: string | null
+          device?: string | null
+          id?: string
+          ip_address?: unknown | null
+          link_id?: string | null
+          os?: string | null
+          referrer?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clicks_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      links: {
+        Row: {
+          clicks: number | null
+          created_at: string
+          description: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          original_url: string
+          password: string | null
+          short_code: string
+          title: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          clicks?: number | null
+          created_at?: string
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          original_url: string
+          password?: string | null
+          short_code: string
+          title?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          clicks?: number | null
+          created_at?: string
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          original_url?: string
+          password?: string | null
+          short_code?: string
+          title?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          email: string
+          id: string
+          name: string | null
+          plan: string | null
+          updated_at: string
+          user_id: string | null
+          website: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          name?: string | null
+          plan?: string | null
+          updated_at?: string
+          user_id?: string | null
+          website?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string | null
+          plan?: string | null
+          updated_at?: string
+          user_id?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
+      qr_codes: {
+        Row: {
+          created_at: string
+          id: string
+          link_id: string | null
+          logo_url: string | null
+          size: number | null
+          style: Json | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          link_id?: string | null
+          logo_url?: string | null
+          size?: number | null
+          style?: Json | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          link_id?: string | null
+          logo_url?: string | null
+          size?: number | null
+          style?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qr_codes_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_short_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
